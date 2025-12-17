@@ -2,34 +2,32 @@
 """Generate architecture diagram for FileShare application."""
 
 from diagrams import Diagram, Cluster, Edge
-from diagrams.onprem.client import User, Client
+from diagrams.onprem.client import User
 from diagrams.onprem.network import Nginx
 from diagrams.programming.language import Rust
-from diagrams.onprem.container import Docker
 from diagrams.generic.storage import Storage
 from diagrams.generic.compute import Rack
-from diagrams.custom import Custom
 import os
 
 # Set output directory
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 graph_attr = {
-    "bgcolor": "#1a1a2e",
-    "fontcolor": "#ffffff",
+    "bgcolor": "white",
+    "fontcolor": "#333333",
     "fontsize": "14",
     "pad": "0.5",
     "splines": "ortho",
 }
 
 node_attr = {
-    "fontcolor": "#ffffff",
+    "fontcolor": "#333333",
     "fontsize": "11",
 }
 
 edge_attr = {
-    "color": "#6c7086",
-    "fontcolor": "#a6adc8",
+    "color": "#666666",
+    "fontcolor": "#333333",
     "fontsize": "10",
 }
 
@@ -45,39 +43,39 @@ with Diagram(
 ):
     user = User("Browser\nClient")
 
-    with Cluster("Internet", graph_attr={"bgcolor": "#16213e", "fontcolor": "#cdd6f4"}):
+    with Cluster("Internet", graph_attr={"bgcolor": "#e8f4f8", "fontcolor": "#1a5276"}):
         nginx = Nginx("Nginx\nReverse Proxy\nfileshare.bjk.ai:443")
 
-    with Cluster("Server (Port 7012)", graph_attr={"bgcolor": "#0f3460", "fontcolor": "#cdd6f4"}):
-        with Cluster("Actix-web Application", graph_attr={"bgcolor": "#1a1a2e", "fontcolor": "#89b4fa"}):
+    with Cluster("Server (Port 7012)", graph_attr={"bgcolor": "#fef9e7", "fontcolor": "#7d6608"}):
+        with Cluster("Actix-web Application", graph_attr={"bgcolor": "#fff5eb", "fontcolor": "#a04000"}):
             rust_app = Rust("Actix-web\nServer")
 
-        with Cluster("Handlers", graph_attr={"bgcolor": "#1a1a2e", "fontcolor": "#a6e3a1"}):
+        with Cluster("Handlers", graph_attr={"bgcolor": "#eafaf1", "fontcolor": "#1e8449"}):
             upload = Rack("POST /upload\nFile Handler")
-            download = Rack("GET /download\nFile Streamer")
+            download = Rack("GET /{file}\nFile Streamer")
             qr = Rack("GET /qr\nQR Generator")
 
-        with Cluster("Modules", graph_attr={"bgcolor": "#1a1a2e", "fontcolor": "#f9e2af"}):
+        with Cluster("Modules", graph_attr={"bgcolor": "#f5eef8", "fontcolor": "#6c3483"}):
             zip_mod = Rack("ZIP\nCompressor")
             qr_mod = Rack("QR Code\nEncoder")
 
-    with Cluster("Storage", graph_attr={"bgcolor": "#16213e", "fontcolor": "#f38ba8"}):
+    with Cluster("Storage", graph_attr={"bgcolor": "#fdedec", "fontcolor": "#922b21"}):
         storage = Storage("./uploads/\nFile Storage")
         counter = Storage(".zipcount\nID Counter")
 
     # Connections
-    user >> Edge(label="HTTPS", color="#89dceb") >> nginx
-    nginx >> Edge(label="HTTP:7012", color="#89dceb") >> rust_app
+    user >> Edge(label="HTTPS", color="#2980b9") >> nginx
+    nginx >> Edge(label="HTTP:7012", color="#2980b9") >> rust_app
 
-    rust_app >> Edge(color="#a6e3a1") >> upload
-    rust_app >> Edge(color="#a6e3a1") >> download
-    rust_app >> Edge(color="#a6e3a1") >> qr
+    rust_app >> Edge(color="#27ae60") >> upload
+    rust_app >> Edge(color="#27ae60") >> download
+    rust_app >> Edge(color="#27ae60") >> qr
 
-    upload >> Edge(color="#f9e2af") >> zip_mod
-    qr >> Edge(color="#f9e2af") >> qr_mod
+    upload >> Edge(color="#8e44ad") >> zip_mod
+    qr >> Edge(color="#8e44ad") >> qr_mod
 
-    upload >> Edge(label="write", color="#f38ba8") >> storage
-    download >> Edge(label="read", color="#f38ba8") >> storage
-    zip_mod >> Edge(label="read/write", color="#f38ba8") >> counter
+    upload >> Edge(label="write", color="#c0392b") >> storage
+    download >> Edge(label="read", color="#c0392b") >> storage
+    zip_mod >> Edge(label="read/write", color="#c0392b") >> counter
 
 print("Diagram generated: architecture_diagram.png")

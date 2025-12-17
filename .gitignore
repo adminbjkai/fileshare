@@ -1,1 +1,20 @@
-/target
+# Build
+/target/
+
+# Uploads (keep directory structure)
+/uploads/*
+!/uploads/.gitkeep
+
+# Python venv (for diagram generation)
+.venv/
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp

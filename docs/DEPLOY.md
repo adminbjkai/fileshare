@@ -15,6 +15,8 @@ Or create the directory structure on the server:
 # On the server
 sudo mkdir -p /opt/fileshare/{uploads,static}
 sudo chown -R www-data:www-data /opt/fileshare
+sudo chmod 755 /opt/fileshare/static
+sudo chmod 775 /opt/fileshare/uploads
 ```
 
 ### 2. Copy the Binary and Static Files
@@ -29,6 +31,8 @@ sudo cp -r static/* /opt/fileshare/static/
 # Set permissions
 sudo chmod +x /opt/fileshare/fileshare
 sudo chown -R www-data:www-data /opt/fileshare
+sudo find /opt/fileshare/static -type f -exec chmod 644 {} +
+sudo find /opt/fileshare/uploads -type f -exec chmod 664 {} +
 ```
 
 ### 3. Install systemd Service
